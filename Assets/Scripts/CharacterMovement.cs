@@ -4,13 +4,15 @@ public class CharacterMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float speed = 17f;
-    public float slowSpeed = 5f;         // Speed when z < -414.5
+    public float slowSpeed = 5f;
     private float originalSpeed;
-    private bool slowedDown = false;     // Ensure speed drops only once
+    private bool slowedDown = false;
 
     [Header("Mouse Settings")]
-    public float mouseSensitivity = 200f;
+    [Range(5f, 150f)]
+    public float mouseSensitivity = 50f;   // ← LOWERED from 200
     public Transform playerCamera;
+    public float maxMouseDelta = 2f;       // Prevents crazy flick spikes
 
     [Header("Gravity Settings")]
     public float gravity = -9.81f;
@@ -29,7 +31,7 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
-        // Reduce speed once past the z threshold
+        // Slow movement once past threshold
         if (!slowedDown && transform.position.z < -414.5f)
         {
             speed = slowSpeed;
@@ -47,26 +49,29 @@ public class CharacterMovement : MonoBehaviour
         if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
-        // Forward movement is always "pressed down"
-        Vector3 move = transform.forward; // ignore horizontal input
+        Vector3 move = transform.forward;
         controller.Move(move * speed * Time.deltaTime);
 
-        // Apply gravity
         velocity.y += gravity * Time.deltaTime;
         float terminalVelocity = -50f;
         velocity.y = Mathf.Max(velocity.y, terminalVelocity);
+
         controller.Move(new Vector3(0, velocity.y, 0) * Time.deltaTime);
     }
 
     void HandleLook()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        // Clamp mouse input to prevent massive flick spikes
+        float rawMouseX = Mathf.Clamp(Input.GetAxis("Mouse X"), -maxMouseDelta, maxMouseDelta);
+        float rawMouseY = Mathf.Clamp(Input.GetAxis("Mouse Y"), -maxMouseDelta, maxMouseDelta);
+
+        float mouseX = rawMouseX * mouseSensitivity * Time.deltaTime;
+        float mouseY = rawMouseY * mouseSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
+        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 }
