@@ -23,7 +23,6 @@ public class PlayerFall : MonoBehaviour
     {
         if(isFalling)
         {
-            // Move downward manually
             transform.position += Vector3.down * fallSpeed * Time.fixedDeltaTime;
         }
     }

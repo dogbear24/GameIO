@@ -16,7 +16,7 @@ public class CameraFogController : MonoBehaviour
     public float cameraMoveDuration = 0.6f;
 
     [Header("Mouse Sensitivity")]
-    public float mouseSensitivity = 50f;   // LOWER THIS to slow rotation
+    public float mouseSensitivity = 50f;   
 
     [Header("Collapsing Hallway Shake")]
     public float shakeAmount = 0.15f;
@@ -51,7 +51,6 @@ public class CameraFogController : MonoBehaviour
 
         HandleMouseRotation();
 
-        // 🔥 SHAKE BEFORE THRESHOLD
         if (!transitionDone && player.position.z > zThreshold)
         {
             shakeTimer -= Time.deltaTime;
@@ -73,7 +72,6 @@ public class CameraFogController : MonoBehaviour
             }
         }
 
-        // 🚀 TRANSITION
         if (!transitionDone && player.position.z < zThreshold)
         {
             transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);

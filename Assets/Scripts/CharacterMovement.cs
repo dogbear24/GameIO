@@ -10,9 +10,9 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Mouse Settings")]
     [Range(5f, 150f)]
-    public float mouseSensitivity = 50f;   // ← LOWERED from 200
+    public float mouseSensitivity = 50f;  
     public Transform playerCamera;
-    public float maxMouseDelta = 2f;       // Prevents crazy flick spikes
+    public float maxMouseDelta = 2f;    
 
     [Header("Gravity Settings")]
     public float gravity = -9.81f;
@@ -31,7 +31,6 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
-        // Slow movement once past threshold
         if (!slowedDown && transform.position.z < -414.5f)
         {
             speed = slowSpeed;
@@ -61,7 +60,6 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleLook()
     {
-        // Clamp mouse input to prevent massive flick spikes
         float rawMouseX = Mathf.Clamp(Input.GetAxis("Mouse X"), -maxMouseDelta, maxMouseDelta);
         float rawMouseY = Mathf.Clamp(Input.GetAxis("Mouse Y"), -maxMouseDelta, maxMouseDelta);
 
