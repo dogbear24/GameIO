@@ -15,12 +15,22 @@ public class FloatingSmoke : MonoBehaviour
 
     void Start()
     {
+        if (smokeLayers == null || smokeLayers.Length == 0)
+        {
+            Debug.LogError("Smoke Layers not assigned!");
+            return;
+        }
 
-
-        // Store starting positions
         initialPositions = new Vector2[smokeLayers.Length];
+
         for (int i = 0; i < smokeLayers.Length; i++)
         {
+            if (smokeLayers[i] == null)
+            {
+                Debug.LogError("One of the smoke layers is null!");
+                continue;
+            }
+
             initialPositions[i] = smokeLayers[i].rectTransform.anchoredPosition;
         }
     }
