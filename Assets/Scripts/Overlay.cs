@@ -7,20 +7,30 @@ public class FloatingSmoke : MonoBehaviour
     public Image[] smokeLayers;
 
     [Header("Movement Settings")]
-    public float floatAmountX = 10f; // max horizontal shift
-    public float floatAmountY = 5f;  // max vertical shift
-    public float floatSpeed = 1f;    // speed of floating
+    public float floatAmountX = 10f; 
+    public float floatAmountY = 5f;  
+    public float floatSpeed = 1f; 
 
     private Vector2[] initialPositions;
 
     void Start()
     {
+        if (smokeLayers == null || smokeLayers.Length == 0)
+        {
+            Debug.LogError("Smoke Layers not assigned!");
+            return;
+        }
 
-
-        // Store starting positions
         initialPositions = new Vector2[smokeLayers.Length];
+
         for (int i = 0; i < smokeLayers.Length; i++)
         {
+            if (smokeLayers[i] == null)
+            {
+                Debug.LogError("One of the smoke layers is null!");
+                continue;
+            }
+
             initialPositions[i] = smokeLayers[i].rectTransform.anchoredPosition;
         }
     }
@@ -29,7 +39,6 @@ public class FloatingSmoke : MonoBehaviour
     {
         for (int i = 0; i < smokeLayers.Length; i++)
         {
-            // Offset based on sine and cosine for independent movement
             float offsetX = Mathf.Sin(Time.time * floatSpeed + i * 10f) * floatAmountX;
         }
     }

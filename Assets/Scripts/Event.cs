@@ -10,7 +10,7 @@ public class Event : MonoBehaviour
     public Transform targetObject;
 
     public GameObject videoCanvas;
-    public GameObject whiteCanvas;   // NEW
+    public GameObject whiteCanvas;  
 
     public VideoPlayer videoPlayer;
     public Image whiteFadeImage;
@@ -48,7 +48,6 @@ public class Event : MonoBehaviour
         float timer = 0f;
         Color color = whiteFadeImage.color;
 
-        // Fade TO white
         while (timer < fadeDuration)
         {
             timer += Time.deltaTime;
@@ -57,13 +56,10 @@ public class Event : MonoBehaviour
             yield return null;
         }
 
-        // Wait 1.9 seconds
         yield return new WaitForSeconds(1.9f);
 
-        // Show video canvas
         videoCanvas.SetActive(true);
 
-        // Hide white canvas completely
         whiteCanvas.SetActive(false);
 
         videoPlayer.loopPointReached += OnVideoFinished;

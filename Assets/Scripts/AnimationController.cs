@@ -3,19 +3,18 @@ using UnityEngine;
 public class TriggerAnimationOnPosition : MonoBehaviour
 {
     [Header("Animator Settings")]
-    public Animator animator;             // Assign your character's Animator here
-    public string animationTrigger = "Playwalk"; // Name of the trigger in Animator
+    public Animator animator;          
+    public string animationTrigger = "Playwalk"; 
 
     [Header("Position Settings")]
-    public float zThreshold = -414.5f;      // Z position at which to trigger animation
+    public float zThreshold = -414.5f;    
 
-    private bool triggered = false;       // Make sure it only triggers once
+    private bool triggered = false;      
 
     void Update()
     {
         if (animator == null) return;
 
-        // Trigger animation once if past the threshold
         if (!triggered && transform.position.z < zThreshold)
         {
             animator.SetTrigger(animationTrigger);

@@ -27,7 +27,6 @@ public class PlayerMovement : MonoBehaviour
         horizontal = Mathf.Round(horizontal);
         vertical = Mathf.Round(vertical);
 
-        // Only allow movement in one direction at a time
         if (horizontal != 0 && vertical != 0)
         {
             if (Mathf.Abs(horizontal) > Mathf.Abs(vertical))

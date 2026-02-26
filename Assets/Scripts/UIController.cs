@@ -5,7 +5,7 @@ public class UIHideOnZ : MonoBehaviour
 {
     [Header("References")]
     public Transform player;
-    public Image uiImage;   // Drag your Image here
+    public Image uiImage;  
 
     [Header("Settings")]
     public float zThreshold = -414.5f;

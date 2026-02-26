@@ -4,8 +4,8 @@ public class ZPositionAudioController : MonoBehaviour
 {
     public Transform player;
 
-    public AudioSource musicA; // Plays above -410
-    public AudioSource musicB; // Plays below -414.5
+    public AudioSource musicA; 
+    public AudioSource musicB; 
 
     public float upperThreshold = -410f;
     public float lowerThreshold = -414.5f;
@@ -23,7 +23,6 @@ public class ZPositionAudioController : MonoBehaviour
 
 
 
-        // Above -410 → Music A
         if (z > upperThreshold && currentState != MusicState.A)
         {
             PlayMusicA();
