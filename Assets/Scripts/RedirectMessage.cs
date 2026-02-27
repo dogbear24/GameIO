@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-public class IntroText : MonoBehaviour
+public class RedirectMessage : MonoBehaviour
 {
     [Header("Message Settings")]
     public TextMeshProUGUI messageText;

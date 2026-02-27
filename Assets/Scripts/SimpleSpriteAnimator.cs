@@ -1,36 +1,52 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class SimpleSpriteAnimator : MonoBehaviour
 {
-    public Sprite sprite1;
-    public Sprite sprite2;
-    public float switchInterval = 0.3f; // seconds per frame
+    public Tilemap tilemap1;
+    public Tilemap tilemap2;
+    public float switchInterval = 0.3f; // seconds per switch
 
-    private SpriteRenderer spriteRenderer;
     private float timer;
     private bool usingFirst = true;
+    private bool isAnimating = true;
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = sprite1;
+        tilemap1.gameObject.SetActive(true);
+        tilemap2.gameObject.SetActive(false);
     }
 
     void Update()
     {
+        if (!isAnimating) return;
+
         timer += Time.deltaTime;
 
         if (timer >= switchInterval)
         {
             timer = 0f;
 
-            // Toggle between sprite1 and sprite2
             if (usingFirst)
-                spriteRenderer.sprite = sprite2;
+            {
+                tilemap1.gameObject.SetActive(false);
+                tilemap2.gameObject.SetActive(true);
+            }
             else
-                spriteRenderer.sprite = sprite1;
+            {
+                tilemap1.gameObject.SetActive(true);
+                tilemap2.gameObject.SetActive(false);
+            }
 
             usingFirst = !usingFirst;
         }
+    }
+
+    public void StopAndHide()
+    {
+        isAnimating = false;
+
+        tilemap1.gameObject.SetActive(false);
+        tilemap2.gameObject.SetActive(false);
     }
 }
