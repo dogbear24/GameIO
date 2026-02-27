@@ -27,7 +27,7 @@ public class FloatingSmoke : MonoBehaviour
         {
             if (smokeLayers[i] == null)
             {
-                Debug.LogError("One of the smoke layers is null!");
+                //Debug.LogError("One of the smoke layers is null!");
                 continue;
             }
 

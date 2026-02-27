@@ -7,12 +7,16 @@ public class TriggerAnimationOnPosition : MonoBehaviour
     public string animationTrigger = "Playwalk"; 
 
     [Header("Position Settings")]
-    public float zThreshold = -414.5f;    
+    public float zThreshold = -414.5f;
+
+    [Header("Control")]
+    public bool canTrigger = true;
 
     private bool triggered = false;      
 
     void Update()
     {
+        if (!canTrigger) return;
         if (animator == null) return;
 
         if (!triggered && transform.position.z < zThreshold)

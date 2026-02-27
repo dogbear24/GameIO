@@ -11,6 +11,9 @@ public class CameraCon2 : MonoBehaviour
     [Header("Third Person Settings")]
     public Vector3 thirdPersonOffset = new Vector3(0f, 2f, -5f);
 
+    [Header("Camera Control")]
+    public bool canMoveCamera = true;
+
     [Header("Mouse Sensitivity")]
     public float mouseSensitivity = 50f;
 
@@ -32,7 +35,10 @@ public class CameraCon2 : MonoBehaviour
     {
         if (player == null) return;
 
-        HandleMouseRotation();
+        if (canMoveCamera)
+        {
+            HandleMouseRotation();
+        }
 
         // Keep camera locked at third-person offset
         transform.localPosition = thirdPersonOffset;
