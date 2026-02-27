@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: MI_Bark01
-    second: {fileID: 6445358136607604067, guid: 217327bc9e352d1449296de6d88ace6b, type: 3}
+    second: {fileID: 6445358136607604067, guid: 5654f4c4fb65cd04293e14a4101f00c3, type: 3}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
