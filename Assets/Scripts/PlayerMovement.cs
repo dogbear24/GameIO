@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 0.5f;
+    [Header("Movement Speeds")]
+    public float moveSpeed = 0.5f;      // Normal speed
+    public float shiftSpeed = 1.0f;     // Speed when holding Shift
 
+    [Header("Sprites")]
     public Sprite playerUp;      // 2d_player1
     public Sprite playerDown;    // 2d_player2
     public Sprite playerLeft;    // 2d_player3
@@ -12,15 +15,27 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Vector2 movement;
+    private float currentSpeed;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        currentSpeed = moveSpeed;
     }
 
     void Update()
     {
+        // Check Shift key and update currentSpeed
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            currentSpeed = shiftSpeed;
+        }
+        else
+        {
+            currentSpeed = moveSpeed;
+        }
+
         float vertical = -Input.GetAxisRaw("Horizontal");
         float horizontal = Input.GetAxisRaw("Vertical");
 
@@ -45,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (movement != Vector2.zero)
         {
-            rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(rb.position + movement.normalized * currentSpeed * Time.fixedDeltaTime);
         }
     }
 

@@ -6,7 +6,7 @@ using System.Collections;
 public class SceneTransition : MonoBehaviour
 {
     public string sceneToLoad;
-    public bool requiredCondition; // REPLACE
+    public bool requiredCondition = false; // REPLACE
     public float fadeDuration = 1f;
 
     private Image fadePanel;
