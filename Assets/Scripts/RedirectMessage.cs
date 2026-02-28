@@ -15,7 +15,7 @@ public class RedirectMessage : MonoBehaviour
 
     [Header("Trigger Settings")]
     public string triggerTag = "intro";
-    public bool onlyOnce = true;
+    public bool onlyOnce = false;
 
     private bool hasTriggered = false;
 

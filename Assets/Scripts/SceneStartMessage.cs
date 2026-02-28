@@ -8,27 +8,61 @@ public class SceneStartMessage : MonoBehaviour
     public TextMeshProUGUI messageText;
 
     [Header("Message Settings")]
-    [TextArea] public string message = "Welcome!";
+    [TextArea] public string message1 = "Welcome!";
+    [TextArea] public string message2 = "Enjoy your adventure!";
     public float fadeDuration = 1f;
     public float displayTime = 2f;
     public bool disableAfter = true;
 
     private void Start()
     {
-        StartCoroutine(ShowMessage());
+        if (messageText == null)
+        {
+            Debug.LogWarning("SceneStartTwoMessages: No TextMeshProUGUI assigned!");
+            return;
+        }
+
+        // Ensure TMP object is active
+        messageText.gameObject.SetActive(true);
+
+        // Set alpha to 0 initially
+        SetAlpha(0f);
+
+        // Wait one frame to ensure TMP is fully initialized
+        StartCoroutine(StartMessagesNextFrame());
     }
 
-    private IEnumerator ShowMessage()
+    private IEnumerator StartMessagesNextFrame()
     {
-        messageText.gameObject.SetActive(true);
-        messageText.text = message;
+        yield return null; // wait one frame
+        StartCoroutine(ShowMessages());
+    }
+
+    private IEnumerator ShowMessages()
+    {
+        // Fade first message
+        yield return StartCoroutine(FadeMessage(message1));
+
+        // Fade second message
+        yield return StartCoroutine(FadeMessage(message2));
+
+        if (disableAfter)
+            messageText.gameObject.SetActive(false);
+    }
+
+    private IEnumerator FadeMessage(string msg)
+    {
+        messageText.text = msg;
 
         Color c = messageText.color;
         c.a = 0f;
         messageText.color = c;
 
-        // Fade In
+        messageText.gameObject.SetActive(true);
+
         float t = 0f;
+
+        // Fade In
         while (t < fadeDuration)
         {
             t += Time.deltaTime;
@@ -55,8 +89,15 @@ public class SceneStartMessage : MonoBehaviour
 
         c.a = 0f;
         messageText.color = c;
+    }
 
-        if (disableAfter)
-            messageText.gameObject.SetActive(false);
+    private void SetAlpha(float alpha)
+    {
+        if (messageText != null)
+        {
+            Color c = messageText.color;
+            c.a = alpha;
+            messageText.color = c;
+        }
     }
 }
