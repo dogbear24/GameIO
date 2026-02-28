@@ -77,7 +77,6 @@ public class TextureSwitcher : MonoBehaviour
 
     private void Start()
     {
-        SwitchTextures();
         if (postProcessVolume != null)
         {
             postProcessVolume.profile.TryGet(out bloom);
@@ -85,6 +84,106 @@ public class TextureSwitcher : MonoBehaviour
             postProcessVolume.profile.TryGet(out vignette);
             postProcessVolume.profile.TryGet(out whiteBalance);
         }
+
+        if (usingSetA)
+        {
+            material1.mainTexture = mat1TextureB;
+            material2.mainTexture = mat2TextureB;
+
+            RenderSettings.skybox = skyboxB;
+
+            Night.SetActive(false);
+            Day.SetActive(true);
+            
+            // Day Lighting
+            if (directionalLight != null)
+            {
+                directionalLight.intensity = 1f;
+                directionalLight.color = dayLightColor;
+            }
+
+            // Post-Processing
+            if (bloom != null) bloom.intensity.value = dayBloomIntensity;
+            
+            if (colorAdjust != null)
+            {
+                colorAdjust.active = true;
+                colorAdjust.postExposure.overrideState = true;
+                colorAdjust.postExposure.value = dayExposure;
+            }
+
+            if (whiteBalance != null)
+            {
+                whiteBalance.active = true;
+                whiteBalance.temperature.overrideState = true;
+                whiteBalance.temperature.value = dayTemperature;
+            }
+
+            if (vignette != null) vignette.intensity.value = dayVignette;
+
+            // Fog
+            RenderSettings.fogColor = Color.gray;
+            RenderSettings.fogDensity = 0.001f;
+        }
+        // ---------------------------------------------------------
+        // SET A: NIGHT SETTINGS
+        // ---------------------------------------------------------
+        else
+        {
+            material1.mainTexture = mat1TextureA;
+            material2.mainTexture = mat2TextureA;
+
+            RenderSettings.skybox = skyboxA;
+
+            Night.SetActive(true);
+            Day.SetActive(false);
+            
+            // Night Lighting
+            if (directionalLight != null)
+            {
+                directionalLight.intensity = 0.05f;
+                directionalLight.color = nightLightColor;
+            }
+
+            // Post-Processing
+            if (bloom != null) bloom.intensity.value = nightBloomIntensity;
+            
+            if (colorAdjust != null)
+            {
+                colorAdjust.active = true;
+                colorAdjust.postExposure.overrideState = true;
+                colorAdjust.postExposure.value = nightExposure;
+            }
+
+            if (whiteBalance != null)
+            {
+                whiteBalance.active = true;
+                whiteBalance.temperature.overrideState = true;
+                whiteBalance.temperature.value = nightTemperature;
+            }
+
+            if (vignette != null) vignette.intensity.value = nightVignette;
+
+            // Fog
+            RenderSettings.fogColor = Color.black;
+            RenderSettings.fogDensity = 0.01f;
+        }
+
+        TerrainLayer[] layers = terrain.terrainData.terrainLayers;
+
+        if (layers.Length > terrainLayerIndex)
+        {
+            if (usingSetA)
+                layers[terrainLayerIndex].diffuseTexture = terrainTextureB;
+            else
+                layers[terrainLayerIndex].diffuseTexture = terrainTextureA;
+
+            terrain.terrainData.terrainLayers = layers;
+        }
+
+        usingSetA = !usingSetA;
+
+        DynamicGI.UpdateEnvironment();
     }
 
     public void SwitchTextures()
