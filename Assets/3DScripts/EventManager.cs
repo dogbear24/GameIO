@@ -9,7 +9,7 @@ public class EventManager : MonoBehaviour
     public Transform player;                
     public List<GameObject> fragments = new List<GameObject>(); 
     public float collectionDistance = 2f;   
-    public TextMeshProUGUI statusText;     
+    public TextMeshProUGUI statusText;      
     
     [Header("Chest Settings")]
     public Transform chest;
@@ -24,18 +24,35 @@ public class EventManager : MonoBehaviour
     public bool endSequence = false;
     public int totalTarget = 3; 
 
+    [Header("End Sequence Actions")]
+    public Animator playerAnimator;  
+
     private int collectedCount = 0;
     private Coroutine currentTextRoutine;
 
+    public CharacterMovement3D charactermovement;
+    public CameraCon2 cameracontroller;
+    public Transform teleportTarget;
+
+    public GameObject pastPlayer;
+    public RuntimeAnimatorController pastPlayerAnimator;
+
+    [Header("Past Player Movement")]
+    public float pastPlayerMoveSpeed = 1.5f;
+    public bool pastPlayerReady = false;
+
+
+    public bool endCutScene = false;
+
     void Start()
     {
+        pastPlayer.SetActive(false);
         if (statusText != null)
         {
             Color c = statusText.color;
             c.a = 0;
             statusText.color = c;
             statusText.gameObject.SetActive(true);
-
             StartCoroutine(IntroSequence());
         }
     }
@@ -43,7 +60,7 @@ public class EventManager : MonoBehaviour
     IEnumerator IntroSequence()
     {
         yield return StartCoroutine(FlashText("Welcome to Oneiros, the City of Dreams"));
-        yield return StartCoroutine(FlashText(""));
+        yield return StartCoroutine(FlashText("Press [Tab] for Skills"));
         yield return StartCoroutine(FlashText("What was that? I woke up by a statue in... a garden?"));
         yield return StartCoroutine(FlashText("No, I've been in that garden before... I think"));
         yield return StartCoroutine(FlashText("..."));
@@ -83,9 +100,34 @@ public class EventManager : MonoBehaviour
                 if (distanceToChest <= chestInteractionDistance)
                 {
                     endSequence = true;
+                    ExecuteEndSequenceActions();
                 }
             }
         }
+    }
+
+    void ExecuteEndSequenceActions()
+    {
+        player.position = teleportTarget.position;
+        player.rotation = teleportTarget.rotation;
+
+        if (playerAnimator != null)
+        {
+            playerAnimator.speed = 0f; 
+        }
+
+        if (cameracontroller != null)
+        {
+            cameracontroller.canMoveCamera = false;
+        }
+
+        if (charactermovement != null)
+        {
+            charactermovement.canMove = false;
+        }
+
+        StartCoroutine(PastPlayerSequence());
+        
     }
 
     void CollectFragment(int index)
@@ -148,5 +190,49 @@ public class EventManager : MonoBehaviour
             statusText.color = textColor;
             yield return null;
         }
+    }
+
+    IEnumerator EnablePastPlayerAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        endCutScene = true;
+    }
+
+    IEnumerator PastPlayerSequence()
+    {
+        Animator anim = pastPlayer.GetComponent<Animator>();
+
+        if (anim != null && pastPlayerAnimator != null)
+        {
+            anim.runtimeAnimatorController = pastPlayerAnimator;
+        }
+
+        pastPlayer.SetActive(true);
+
+        // Wait before moving
+        //yield return new WaitForSeconds(4f);
+
+        pastPlayerReady = true;
+
+        // Move for 4 seconds
+        yield return StartCoroutine(MovePastPlayerForward());
+
+        endCutScene = true;
+    }
+    IEnumerator MovePastPlayerForward()
+    {
+        float duration = 8f;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            pastPlayer.transform.position += pastPlayer.transform.forward * pastPlayerMoveSpeed * Time.deltaTime;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        // Movement finished
+        endCutScene = true;
     }
 }
