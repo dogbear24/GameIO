@@ -25,6 +25,7 @@ public class EventManager : MonoBehaviour
     public int totalTarget = 3; 
 
     private int collectedCount = 0;
+    private Coroutine currentTextRoutine;
 
     void Start()
     {
@@ -33,9 +34,20 @@ public class EventManager : MonoBehaviour
             Color c = statusText.color;
             c.a = 0;
             statusText.color = c;
-            statusText.gameObject.SetActive(true); 
-            StartCoroutine(FlashText($"Was that all a dream...I remember coming to collect pieces of the calamity"));
+            statusText.gameObject.SetActive(true);
+
+            StartCoroutine(IntroSequence());
         }
+    }
+
+    IEnumerator IntroSequence()
+    {
+        yield return StartCoroutine(FlashText("Welcome to Oneiros, the City of Dreams"));
+        yield return StartCoroutine(FlashText(""));
+        yield return StartCoroutine(FlashText("What was that? I woke up by a statue in... a garden?"));
+        yield return StartCoroutine(FlashText("No, I've been in that garden before... I think"));
+        yield return StartCoroutine(FlashText("..."));
+        yield return StartCoroutine(FlashText("I'm out of time. I need to collect and reseal all the Remnants before it's too late."));
     }
 
     public void RegisterFragment(GameObject newFragment)
@@ -79,42 +91,49 @@ public class EventManager : MonoBehaviour
     void CollectFragment(int index)
     {
         GameObject fragment = fragments[index];
-        fragments.RemoveAt(index); 
-        Destroy(fragment); 
+        fragments.RemoveAt(index);
+        Destroy(fragment);
 
         collectedCount++;
 
         if (statusText != null)
         {
-            StopAllCoroutines(); 
-            
+            if (currentTextRoutine != null)
+                StopCoroutine(currentTextRoutine);
+
             if (collectedCount >= totalTarget)
             {
                 allFragmentsCollected = true;
-                StartCoroutine(FinalSequence());
+                currentTextRoutine = StartCoroutine(FinalSequence());
             }
             else
             {
-                StartCoroutine(FlashText($"{collectedCount}/{totalTarget} Fragments Collected"));
+                currentTextRoutine = StartCoroutine(
+                    FlashText($"{collectedCount}/{totalTarget} Remnants Collected")
+                );
             }
         }
     }
 
     IEnumerator FinalSequence()
     {
-        yield return StartCoroutine(FlashText($"{collectedCount}/{totalTarget} Fragments Collected"));
-        if (collectedCount >= totalTarget)
-        {
-            yield return StartCoroutine(FlashText("I'll change the past and reseal the box...it should have never been opened"));
-        }
+        yield return StartCoroutine(
+            FlashText($"{collectedCount}/{totalTarget} Remnants Collected")
+        );
+
+        yield return StartCoroutine(
+            FlashText("I'll change the past and reseal the box... it should have never been opened")
+        );
     }
 
     IEnumerator FlashText(string message)
     {
         statusText.text = message;
         Color textColor = statusText.color;
-        
-        while (textColor.a < 1.0f) {
+
+        // Fade In
+        while (textColor.a < 1.0f)
+        {
             textColor.a += Time.deltaTime * fadeSpeed;
             statusText.color = textColor;
             yield return null;
@@ -122,7 +141,9 @@ public class EventManager : MonoBehaviour
 
         yield return new WaitForSeconds(displayDuration);
 
-        while (textColor.a > 0.0f) {
+        // Fade Out
+        while (textColor.a > 0.0f)
+        {
             textColor.a -= Time.deltaTime * fadeSpeed;
             statusText.color = textColor;
             yield return null;
