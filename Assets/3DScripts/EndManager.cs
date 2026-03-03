@@ -6,30 +6,42 @@ using System.Collections;
 
 public class EndManager : MonoBehaviour
 {
-
     public EventManager eventManager;
     public GameObject videoCanvas;
     public VideoPlayer videoPlayer;
     public GameObject UICanvas;
     public GameObject UI;
+    public GameObject UI2;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool hasStartedEnding = false; 
+
     void Start()
     {
         videoCanvas.SetActive(false);
         UICanvas.SetActive(false);
         UI.SetActive(false);
+        UI2.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (eventManager.endCutScene == true)
+        if (eventManager.endCutScene == true && !hasStartedEnding)
         {
-            videoCanvas.SetActive(true);
-            videoPlayer.loopPointReached += OnVideoFinished;
-            videoPlayer.Play();
+            StartCoroutine(EndSequenceRoutine());
         }
+    }
+
+    IEnumerator EndSequenceRoutine()
+    {
+        hasStartedEnding = true; 
+
+        UICanvas.SetActive(true);
+        UI.SetActive(true);
+        UI2.SetActive(true);
+
+        yield return new WaitForSeconds(8f);
+
+        SceneManager.LoadScene("Menu");
     }
 
     void OnVideoFinished(VideoPlayer vp)
